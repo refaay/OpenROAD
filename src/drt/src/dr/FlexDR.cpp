@@ -915,7 +915,7 @@ static std::vector<FlexDR::SearchRepairArgs> strategy()
     {7, -2,  3,      shapeCost,       shapeCost,       shapeCost, 0.950, 1,  true}, //  1
     {7, -5,  3,      shapeCost,       shapeCost,       shapeCost, 0.950, 1,  true}, //  2
     {7,  0,  8,      shapeCost,      MARKERCOST,   2 * shapeCost, 0.950, 0, false}, //  3
-    {7, -1,  8,      shapeCost,      MARKERCOST,   2 * shapeCost, 0.950, 0, false}, //  4
+//    {7, -1,  8,      shapeCost,      MARKERCOST,   2 * shapeCost, 0.950, 0, false}, //  4
 //    {7, -2,  8,      shapeCost,      MARKERCOST,   2 * shapeCost, 0.950, 0, false}, //  5
 //    {7, -3,  8,      shapeCost,      MARKERCOST,   2 * shapeCost, 0.950, 0, false}, //  6
 //    {7, -4,  8,      shapeCost,      MARKERCOST,   2 * shapeCost, 0.950, 0, false}, //  7
