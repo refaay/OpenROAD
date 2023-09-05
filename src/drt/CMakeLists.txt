@@ -213,6 +213,7 @@ if(ENABLE_TESTS)
   add_dependencies(build_and_test trTest)
 
   if(DEBUG_DRT_UNDERFLOW)
+    message(STATUS "Checking for underflow in drt cost calculations")
     target_compile_definitions(drt
       PRIVATE
       DEBUG_DRT_UNDERFLOW=1

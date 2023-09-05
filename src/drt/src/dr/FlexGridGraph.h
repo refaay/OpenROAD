@@ -475,41 +475,73 @@ class FlexGridGraph
   void addRouteShapeCostPlanar(frMIdx x, frMIdx y, frMIdx z)
   {
     auto& node = nodes_[getIdx(x, y, z)];
+    if (x == 12 && y == 150 && z == 1) {
+      std::cout << "add routeShapeCostPlanar\n";
+    }
     node.routeShapeCostPlanar = addToByte(node.routeShapeCostPlanar, 1);
   }
   void addRouteShapeCostVia(frMIdx x, frMIdx y, frMIdx z)
   {
     auto& node = nodes_[getIdx(x, y, z)];
+    if (x == 12 && y == 150 && z == 1) {
+      std::cout << "add routeShapeCostVia\n";
+    }
     node.routeShapeCostVia = addToByte(node.routeShapeCostVia, 1);
   }
-  void subRouteShapeCostPlanar(frMIdx x, frMIdx y, frMIdx z)
+  void subRouteShapeCostPlanar(frMIdx x,
+                               frMIdx y,
+                               frMIdx z,
+                               std::string func_call)
   {
     auto& node = nodes_[getIdx(x, y, z)];
-    node.routeShapeCostPlanar = subFromByte(node.routeShapeCostPlanar, 1);
+    if (x == 12 && y == 150 && z == 1) {
+      std::cout << "sub routeShapeCostPlanar\n";
+    }
+    node.routeShapeCostPlanar = subFromByte(
+        node.routeShapeCostPlanar,
+        1,
+        std::to_string(x) + " " + std::to_string(y) + " " + std::to_string(z)
+            + " " + "subRouteShapeCostPlanar " + func_call);
   }
   void subRouteShapeCostVia(frMIdx x, frMIdx y, frMIdx z)
   {
     auto& node = nodes_[getIdx(x, y, z)];
-    node.routeShapeCostVia = subFromByte(node.routeShapeCostVia, 1);
+    if (x == 12 && y == 150 && z == 1) {
+      std::cout << "sub routeShapeCostVia\n";
+    }
+    node.routeShapeCostVia
+        = subFromByte(node.routeShapeCostVia, 1, "subRouteShapeCostVia");
   }
   void resetRouteShapeCostPlanar(frMIdx x, frMIdx y, frMIdx z)
   {
     auto idx = getIdx(x, y, z);
+    if (x == 12 && y == 150 && z == 1) {
+      std::cout << "reset routeShapeCostPlanar\n";
+    }
     nodes_[idx].routeShapeCostPlanar = 0;
   }
   void resetRouteShapeCostVia(frMIdx x, frMIdx y, frMIdx z)
   {
     auto idx = getIdx(x, y, z);
+    if (x == 12 && y == 150 && z == 1) {
+      std::cout << "reset routeShapeCostVia\n";
+    }
     nodes_[idx].routeShapeCostVia = 0;
   }
   void addMarkerCostPlanar(frMIdx x, frMIdx y, frMIdx z)
   {
     auto& node = nodes_[getIdx(x, y, z)];
+    if (x == 12 && y == 150 && z == 1) {
+      std::cout << "add markerCostPlanar\n";
+    }
     node.markerCostPlanar = addToByte(node.markerCostPlanar, 10);
   }
   void addMarkerCostVia(frMIdx x, frMIdx y, frMIdx z)
   {
     auto& node = nodes_[getIdx(x, y, z)];
+    if (x == 12 && y == 150 && z == 1) {
+      std::cout << "add markerCostVia\n";
+    }
     node.markerCostVia = addToByte(node.markerCostVia, 10);
   }
   void addMarkerCost(frMIdx x, frMIdx y, frMIdx z, frDirEnum dir)
@@ -520,9 +552,15 @@ class FlexGridGraph
       switch (dir) {
         case frDirEnum::E:
         case frDirEnum::N:
+          if (x == 12 && y == 150 && z == 1) {
+            std::cout << "add markerCostPlanar\n";
+          }
           node.markerCostPlanar = addToByte(node.markerCostPlanar, 10);
           break;
         case frDirEnum::U:
+          if (x == 12 && y == 150 && z == 1) {
+            std::cout << "add markerCostVia\n";
+          }
           node.markerCostVia = addToByte(node.markerCostVia, 10);
           break;
         default:;
@@ -600,6 +638,9 @@ class FlexGridGraph
   {
     if (isValid(x, y, z)) {
       auto& node = nodes_[getIdx(x, y, z)];
+      if (x == 12 && y == 150 && z == 1) {
+        std::cout << "add fixedShapeCostPlanar\n";
+      }
       node.fixedShapeCostPlanar = addToByte(node.fixedShapeCostPlanar, 1);
     }
   }
@@ -607,6 +648,9 @@ class FlexGridGraph
   {
     if (isValid(x, y, z)) {
       auto& node = nodes_[getIdx(x, y, z)];
+      if (x == 12 && y == 150 && z == 1) {
+        std::cout << "add fixedShapeCostPlanar\n";
+      }
       node.fixedShapeCostPlanar = c;
     }
   }
@@ -614,6 +658,9 @@ class FlexGridGraph
   {
     if (isValid(x, y, z)) {
       auto& node = nodes_[getIdx(x, y, z)];
+      if (x == 12 && y == 150 && z == 1) {
+        std::cout << "add fixedShapeCostVia\n";
+      }
       node.fixedShapeCostVia = addToByte(node.fixedShapeCostVia, 1);
     }
   }
@@ -621,6 +668,9 @@ class FlexGridGraph
   {
     if (isValid(x, y, z)) {
       auto& node = nodes_[getIdx(x, y, z)];
+      if (x == 12 && y == 150 && z == 1) {
+        std::cout << "set fixedShapeCostVia\n";
+      }
       node.fixedShapeCostVia = c;
     }
   }
@@ -628,14 +678,22 @@ class FlexGridGraph
   {
     if (isValid(x, y, z)) {
       auto& node = nodes_[getIdx(x, y, z)];
-      node.fixedShapeCostPlanar = subFromByte(node.fixedShapeCostPlanar, 1);
+      if (x == 12 && y == 150 && z == 1) {
+        std::cout << "sub fixedShapeCostPlanar\n";
+      }
+      node.fixedShapeCostPlanar = subFromByte(
+          node.fixedShapeCostPlanar, 1, "subFixedShapeCostPlanar");
     }
   }
   void subFixedShapeCostVia(frMIdx x, frMIdx y, frMIdx z)
   {
     if (isValid(x, y, z)) {
       auto& node = nodes_[getIdx(x, y, z)];
-      node.fixedShapeCostVia = subFromByte(node.fixedShapeCostVia, 1);
+      if (x == 12 && y == 150 && z == 1) {
+        std::cout << "sub fixedShapeCostVia\n";
+      }
+      node.fixedShapeCostVia
+          = subFromByte(node.fixedShapeCostVia, 1, "subFixedShapeCostVia");
     }
   }
 
@@ -1054,11 +1112,18 @@ class FlexGridGraph
     return result;
   }
 
-  frUInt4 subFromByte(frUInt4 minuend, frUInt4 subtrahend)
+  frUInt4 subFromByte(frUInt4 minuend,
+                      frUInt4 subtrahend,
+                      std::string func_call)
   {
 #ifdef DEBUG_DRT_UNDERFLOW
     if (subtrahend > minuend) {
-      logger_->error(utl::DRT, 551, "subFromByte underflow");
+      logger_->error(utl::DRT,
+                     551,
+                     "subFromByte underflow from funcs {}, ({} - {})",
+                     func_call,
+                     minuend,
+                     subtrahend);
     }
 #endif
     return std::max((int) (minuend - subtrahend), 0);

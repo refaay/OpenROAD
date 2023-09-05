@@ -747,9 +747,13 @@ class FlexDRWorker
   void route_queue_main(std::queue<RouteQueueEntry>& rerouteQueue);
   void addMinAreaPatches_poly(gcNet* drcNet, drNet* net);
   void cleanUnneededPatches_poly(gcNet* drcNet, drNet* net);
-  void modEolCosts_poly(gcNet* net, ModCostType modType);
-  void modEolCosts_poly(gcPin* shape, frLayer* layer, ModCostType modType);
-  void modEolCost(frCoord low,
+  void modEolCosts_poly(std::string func_call, gcNet* net, ModCostType modType);
+  void modEolCosts_poly(std::string func_call,
+                        gcPin* shape,
+                        frLayer* layer,
+                        ModCostType modType);
+  void modEolCost(std::string func_call,
+                  frCoord low,
                   frCoord high,
                   frCoord line,
                   bool isVertical,
@@ -779,15 +783,18 @@ class FlexDRWorker
   void addPathCost(drConnFig* connFig,
                    bool modEol = false,
                    bool modCutSpc = false);
-  void subPathCost(drConnFig* connFig,
+  void subPathCost(std::string func_call,
+                   drConnFig* connFig,
                    bool modEol = false,
                    bool modCutSpc = false);
-  void modPathCost(drConnFig* connFig,
+  void modPathCost(std::string func_call,
+                   drConnFig* connFig,
                    ModCostType type,
                    bool modEol = false,
                    bool modCutSpc = false);
   // minSpc
-  void modMinSpacingCostPlanar(const Rect& box,
+  void modMinSpacingCostPlanar(std::string func_call,
+                               const Rect& box,
                                frMIdx z,
                                ModCostType type,
                                bool isBlockage = false,
@@ -822,7 +829,8 @@ class FlexDRWorker
                                        frMIdx j,
                                        frMIdx z);
   // eolSpc
-  void modEolSpacingCost_helper(const Rect& testbox,
+  void modEolSpacingCost_helper(std::string func_call,
+                                const Rect& testbox,
                                 frMIdx z,
                                 ModCostType type,
                                 int eolType);

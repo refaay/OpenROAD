@@ -221,7 +221,8 @@ void FlexDRWorker::modCornerToCornerSpacing_helper(const Rect& box,
     for (int j = p1.y(); j <= p2.y(); j++) {
       switch (type) {
         case subRouteShape:
-          gridGraph_.subRouteShapeCostPlanar(i, j, z);
+          gridGraph_.subRouteShapeCostPlanar(
+              i, j, z, "modCornerToCornerSpacing_helper");
           break;
         case addRouteShape:
           gridGraph_.addRouteShapeCostPlanar(i, j, z);
@@ -272,7 +273,8 @@ void FlexDRWorker::modCornerToCornerSpacing(const Rect& box,
   }
 }
 
-void FlexDRWorker::modMinSpacingCostPlanar(const Rect& box,
+void FlexDRWorker::modMinSpacingCostPlanar(std::string func_call,
+                                           const Rect& box,
                                            frMIdx z,
                                            ModCostType type,
                                            bool isBlockage,
@@ -325,7 +327,11 @@ void FlexDRWorker::modMinSpacingCostPlanar(const Rect& box,
       if (distSquare < bloatDistSquare) {
         switch (type) {
           case subRouteShape:
-            gridGraph_.subRouteShapeCostPlanar(i, j, z);  // safe access
+            gridGraph_.subRouteShapeCostPlanar(
+                i,
+                j,
+                z,
+                "modMinSpacingCostPlanar " + func_call);  // safe access
             break;
           case addRouteShape:
             gridGraph_.addRouteShapeCostPlanar(i, j, z);  // safe access
@@ -740,7 +746,8 @@ void FlexDRWorker::modMinSpacingCostVia(const Rect& box,
 // eolType == 0: planer
 // eolType == 1: down
 // eolType == 2: up
-void FlexDRWorker::modEolSpacingCost_helper(const Rect& testbox,
+void FlexDRWorker::modEolSpacingCost_helper(std::string func_call,
+                                            const Rect& testbox,
                                             frMIdx z,
                                             ModCostType type,
                                             int eolType)
@@ -799,7 +806,14 @@ void FlexDRWorker::modEolSpacingCost_helper(const Rect& testbox,
       if (eolType == 0) {
         switch (type) {
           case subRouteShape:
-            gridGraph_.subRouteShapeCostPlanar(i, j, z);  // safe access
+            gridGraph_.subRouteShapeCostPlanar(
+                i,
+                j,
+                z,
+                std::to_string(i) + " " + std::to_string(j) + " "
+                    + std::to_string(z) + " "
+                    + std::to_string(getTech()->getLayer(lNum)->getWidth())
+                    + " modEolSpacingCost_helper " + func_call);  // safe access
             break;
           case addRouteShape:
             gridGraph_.addRouteShapeCostPlanar(i, j, z);  // safe access
@@ -900,19 +914,19 @@ void FlexDRWorker::modEolSpacingRulesCost(const Rect& box,
                  box.xMax() + eolWithin,
                  box.yMax() + eolSpace);
     // if (!isInitDR()) {
-    modEolSpacingCost_helper(testBox, z, type, 0);
+    modEolSpacingCost_helper("modEolSpacingRulesCost1", testBox, z, type, 0);
     if (!isSkipVia) {
-      modEolSpacingCost_helper(testBox, z, type, 1);
-      modEolSpacingCost_helper(testBox, z, type, 2);
+      modEolSpacingCost_helper("modEolSpacingRulesCost2", testBox, z, type, 1);
+      modEolSpacingCost_helper("modEolSpacingRulesCost3", testBox, z, type, 2);
     }
     testBox.init(box.xMin() - eolWithin,
                  box.yMin() - eolSpace,
                  box.xMax() + eolWithin,
                  box.yMin());
-    modEolSpacingCost_helper(testBox, z, type, 0);
+    modEolSpacingCost_helper("modEolSpacingRulesCost4", testBox, z, type, 0);
     if (!isSkipVia) {
-      modEolSpacingCost_helper(testBox, z, type, 1);
-      modEolSpacingCost_helper(testBox, z, type, 2);
+      modEolSpacingCost_helper("modEolSpacingRulesCost5", testBox, z, type, 1);
+      modEolSpacingCost_helper("modEolSpacingRulesCost6", testBox, z, type, 2);
     }
   }
   // eol to left and right
@@ -921,19 +935,19 @@ void FlexDRWorker::modEolSpacingRulesCost(const Rect& box,
                  box.yMin() - eolWithin,
                  box.xMax() + eolSpace,
                  box.yMax() + eolWithin);
-    modEolSpacingCost_helper(testBox, z, type, 0);
+    modEolSpacingCost_helper("modEolSpacingRulesCost7", testBox, z, type, 0);
     if (!isSkipVia) {
-      modEolSpacingCost_helper(testBox, z, type, 1);
-      modEolSpacingCost_helper(testBox, z, type, 2);
+      modEolSpacingCost_helper("modEolSpacingRulesCost8", testBox, z, type, 1);
+      modEolSpacingCost_helper("modEolSpacingRulesCost9", testBox, z, type, 2);
     }
     testBox.init(box.xMin() - eolSpace,
                  box.yMin() - eolWithin,
                  box.xMin(),
                  box.yMax() + eolWithin);
-    modEolSpacingCost_helper(testBox, z, type, 0);
+    modEolSpacingCost_helper("modEolSpacingRulesCost10", testBox, z, type, 0);
     if (!isSkipVia) {
-      modEolSpacingCost_helper(testBox, z, type, 1);
-      modEolSpacingCost_helper(testBox, z, type, 2);
+      modEolSpacingCost_helper("modEolSpacingRulesCost11", testBox, z, type, 1);
+      modEolSpacingCost_helper("modEolSpacingRulesCost12", testBox, z, type, 2);
     }
   }
 }
@@ -1326,15 +1340,24 @@ void FlexDRWorker::modInterLayerCutSpacingCost(const Rect& box,
 
 void FlexDRWorker::addPathCost(drConnFig* connFig, bool modEol, bool modCutSpc)
 {
-  modPathCost(connFig, ModCostType::addRouteShape, modEol, modCutSpc);
+  modPathCost(
+      "addPathCost", connFig, ModCostType::addRouteShape, modEol, modCutSpc);
 }
 
-void FlexDRWorker::subPathCost(drConnFig* connFig, bool modEol, bool modCutSpc)
+void FlexDRWorker::subPathCost(std::string func_call,
+                               drConnFig* connFig,
+                               bool modEol,
+                               bool modCutSpc)
 {
-  modPathCost(connFig, ModCostType::subRouteShape, modEol, modCutSpc);
+  modPathCost("subPathCost " + func_call,
+              connFig,
+              ModCostType::subRouteShape,
+              modEol,
+              modCutSpc);
 }
 
-void FlexDRWorker::modPathCost(drConnFig* connFig,
+void FlexDRWorker::modPathCost(std::string func_call,
+                               drConnFig* connFig,
                                ModCostType type,
                                bool modEol,
                                bool modCutSpc)
@@ -1347,7 +1370,7 @@ void FlexDRWorker::modPathCost(drConnFig* connFig,
     Rect box = obj->getBBox();
     ndr = !obj->isTapered() ? connFig->getNet()->getFrNet()->getNondefaultRule()
                             : nullptr;
-    modMinSpacingCostPlanar(box, bi.z(), type, false, ndr);
+    modMinSpacingCostPlanar("modPathCost1", box, bi.z(), type, false, ndr);
     modMinSpacingCostVia(box, bi.z(), type, true, true, false, ndr);
     modMinSpacingCostVia(box, bi.z(), type, false, true, false, ndr);
     modViaForbiddenThrough(bi, ei, type);
@@ -1366,7 +1389,8 @@ void FlexDRWorker::modPathCost(drConnFig* connFig,
     frMIdx zIdx = gridGraph_.getMazeZIdx(obj->getLayerNum());
     Rect box = obj->getBBox();
     ndr = connFig->getNet()->getFrNet()->getNondefaultRule();
-    modMinSpacingCostPlanar(box, zIdx, type, false, ndr);
+    modMinSpacingCostPlanar(
+        "modPathCost2 " + func_call, box, zIdx, type, false, ndr);
     modMinSpacingCostVia(box, zIdx, type, true, true, false, ndr);
     modMinSpacingCostVia(box, zIdx, type, false, true, false, ndr);
     if (modEol)
@@ -1379,7 +1403,7 @@ void FlexDRWorker::modPathCost(drConnFig* connFig,
     // assumes enclosure for via is always rectangle
     Rect box = obj->getLayer1BBox();
     ndr = connFig->getNet()->getFrNet()->getNondefaultRule();
-    modMinSpacingCostPlanar(box, bi.z(), type, false, ndr);
+    modMinSpacingCostPlanar("modPathCost3", box, bi.z(), type, false, ndr);
     modMinSpacingCostVia(box, bi.z(), type, true, false, false, ndr);
     modMinSpacingCostVia(box, bi.z(), type, false, false, false, ndr);
     if (modEol)
@@ -1388,7 +1412,7 @@ void FlexDRWorker::modPathCost(drConnFig* connFig,
     // assumes enclosure for via is always rectangle
     box = obj->getLayer2BBox();
 
-    modMinSpacingCostPlanar(box, ei.z(), type, false, ndr);
+    modMinSpacingCostPlanar("modPathCost4", box, ei.z(), type, false, ndr);
     modMinSpacingCostVia(box, ei.z(), type, true, false, false, ndr);
     modMinSpacingCostVia(box, ei.z(), type, false, false, false, ndr);
     if (modEol)
@@ -1686,10 +1710,11 @@ void FlexDRWorker::route_queue_main(queue<RouteQueueEntry>& rerouteQueue)
       if (graphics_)
         graphics_->startNet(net);
       for (auto& uConnFig : net->getRouteConnFigs()) {
-        subPathCost(uConnFig.get());
+        subPathCost("route_queue_main1", uConnFig.get());
         workerRegionQuery.remove(uConnFig.get());  // worker region query
       }
-      modEolCosts_poly(gcWorker_->getNet(net->getFrNet()),
+      modEolCosts_poly("route_queue_main2",
+                       gcWorker_->getNet(net->getFrNet()),
                        ModCostType::subRouteShape);
       // route_queue need to unreserve via access if all nets are ripped up
       // (i.e., not routed) see route_queue_init_queue this
@@ -1735,7 +1760,9 @@ void FlexDRWorker::route_queue_main(queue<RouteQueueEntry>& rerouteQueue)
         gcWorker_->updateDRNet(net);
         gcWorker_->setEnableSurgicalFix(true);
         gcWorker_->main();
-        modEolCosts_poly(gcWorker_->getTargetNet(), ModCostType::addRouteShape);
+        modEolCosts_poly("route_queue_main",
+                         gcWorker_->getTargetNet(),
+                         ModCostType::addRouteShape);
         // write back GC patches
         drNet* currNet = net;
         for (auto& pwire : gcWorker_->getPWires()) {
@@ -1805,7 +1832,8 @@ void FlexDRWorker::route_queue_main(queue<RouteQueueEntry>& rerouteQueue)
   }
 }
 
-void FlexDRWorker::modEolCosts_poly(gcPin* shape,
+void FlexDRWorker::modEolCosts_poly(std::string func_call,
+                                    gcPin* shape,
                                     frLayer* layer,
                                     ModCostType modType)
 {
@@ -1830,7 +1858,8 @@ void FlexDRWorker::modEolCosts_poly(gcPin* shape,
         line = edge->low().y();
         innerDirIsIncreasing = edge->getInnerDir() == frDirEnum::N;
       }
-      modEolCost(low,
+      modEolCost("modEolCosts_poly2 " + func_call,
+                 low,
                  high,
                  line,
                  edge->isVertical(),
@@ -1841,7 +1870,8 @@ void FlexDRWorker::modEolCosts_poly(gcPin* shape,
   }
 }
 // mods eol cost for an eol edge
-void FlexDRWorker::modEolCost(frCoord low,
+void FlexDRWorker::modEolCost(std::string func_call,
+                              frCoord low,
                               frCoord high,
                               frCoord line,
                               bool isVertical,
@@ -1867,9 +1897,17 @@ void FlexDRWorker::modEolCost(frCoord low,
           low - eol.eolWithin, line, high + eol.eolWithin, line + eol.eolSpace);
   }
   frMIdx z = gridGraph_.getMazeZIdx(layer->getLayerNum());
-  modEolSpacingCost_helper(testBox, z, modType, 0);
-  modEolSpacingCost_helper(testBox, z, modType, 1);
-  modEolSpacingCost_helper(testBox, z, modType, 2);
+  modEolSpacingCost_helper(
+      std::to_string(testBox.xMin()) + " " + std::to_string(testBox.yMin())
+          + " " + std::to_string(testBox.xMax()) + " "
+          + std::to_string(testBox.yMax()) + " " + std::to_string(z)
+          + " modEolCost1 " + func_call,
+      testBox,
+      z,
+      modType,
+      0);
+  modEolSpacingCost_helper("modEolCost2", testBox, z, modType, 1);
+  modEolSpacingCost_helper("modEolCost3", testBox, z, modType, 2);
 }
 
 void FlexDRWorker::cleanUnneededPatches_poly(gcNet* drcNet, drNet* net)
@@ -1906,8 +1944,13 @@ void FlexDRWorker::cleanUnneededPatches_poly(gcNet* drcNet, drNet* net)
   }
 }
 
-void FlexDRWorker::modEolCosts_poly(gcNet* net, ModCostType modType)
+void FlexDRWorker::modEolCosts_poly(std::string func_call,
+                                    gcNet* net,
+                                    ModCostType modType)
 {
+  if (net->getFrNet()->getName() == "net685") {
+    logger_->report("Net {} with mod cost type {}", net->getFrNet()->getName(), std::to_string(modType));
+  }
   for (int lNum = getTech()->getBottomLayerNum();
        lNum <= getTech()->getTopLayerNum();
        lNum++) {
@@ -1915,7 +1958,11 @@ void FlexDRWorker::modEolCosts_poly(gcNet* net, ModCostType modType)
     if (layer->getType() != dbTechLayerType::ROUTING)
       continue;
     for (auto& pin : net->getPins(lNum)) {
-      modEolCosts_poly(pin.get(), layer, modType);
+      modEolCosts_poly(
+          "modEolCosts_poly1 " + net->getFrNet()->getName() + " " + func_call,
+          pin.get(),
+          layer,
+          modType);
     }
   }
 }
