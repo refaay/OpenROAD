@@ -951,7 +951,7 @@ static std::vector<FlexDR::SearchRepairArgs> strategy()
 //    {7, -3,  8, 16 * shapeCost,  4 * MARKERCOST,  50 * shapeCost, 0.950, 0, false}, // 37
 //    {7, -4,  8, 16 * shapeCost,  4 * MARKERCOST,  50 * shapeCost, 0.950, 0, false}, // 38
     {7, -5,  8, 16 * shapeCost,  4 * MARKERCOST,  50 * shapeCost, 0.950, 0, false}, // 39
-    {7, -6,  8, 16 * shapeCost,  4 * MARKERCOST, 100 * shapeCost, 0.990, 0, false}, // 40
+//    {7, -6,  8, 16 * shapeCost,  4 * MARKERCOST, 100 * shapeCost, 0.990, 0, false}, // 40
     {3, -2,  8,      shapeCost,      MARKERCOST, 100 * shapeCost, 0.990, 1, false}, // 41
     {7,  0, 16, 16 * shapeCost,  4 * MARKERCOST, 100 * shapeCost, 0.990, 0, false}, // 42
 //    {7, -1, 16, 16 * shapeCost,  4 * MARKERCOST, 100 * shapeCost, 0.990, 0, false}, // 43
@@ -969,13 +969,13 @@ static std::vector<FlexDR::SearchRepairArgs> strategy()
 //    {7, -5, 32, 32 * shapeCost,  8 * MARKERCOST, 100 * shapeCost, 0.999, 0, false}, // 55
 //    {7, -6, 32, 32 * shapeCost,  8 * MARKERCOST, 100 * shapeCost, 0.999, 0, false}, // 56
     {3, -1,  8,      shapeCost,      MARKERCOST, 100 * shapeCost, 0.999, 1, false}, // 57
-    {7,  0, 64, 64 * shapeCost, 16 * MARKERCOST, 100 * shapeCost, 0.999, 0, false}, // 58
+    {7,  0, 64, 64 * shapeCost, 16 * MARKERCOST, 100 * shapeCost, 0.999, 0, false}  // 58
 //    {7, -1, 64, 64 * shapeCost, 16 * MARKERCOST, 100 * shapeCost, 0.999, 0, false}, // 59
 //    {7, -2, 64, 64 * shapeCost, 16 * MARKERCOST, 100 * shapeCost, 0.999, 0, false}, // 60
-    {7, -3, 64, 64 * shapeCost, 16 * MARKERCOST, 100 * shapeCost, 0.999, 0, false}, // 61
-    {7, -4, 64, 64 * shapeCost, 16 * MARKERCOST, 100 * shapeCost, 0.999, 0, false}, // 62
+//    {7, -3, 64, 64 * shapeCost, 16 * MARKERCOST, 100 * shapeCost, 0.999, 0, false}, // 61
+//    {7, -4, 64, 64 * shapeCost, 16 * MARKERCOST, 100 * shapeCost, 0.999, 0, false}, // 62
 //    {7, -5, 64, 64 * shapeCost, 16 * MARKERCOST, 100 * shapeCost, 0.999, 0, false}, // 63
-    {7, -6, 64, 64 * shapeCost, 16 * MARKERCOST, 100 * shapeCost, 0.999, 0, false}  // 64
+//    {7, -6, 64, 64 * shapeCost, 16 * MARKERCOST, 100 * shapeCost, 0.999, 0, false}  // 64
   };
   // clang-format on
 }
