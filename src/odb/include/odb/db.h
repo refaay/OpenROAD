@@ -32,6 +32,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <list>
 #include <map>
 #include <set>
@@ -158,8 +159,6 @@ class dbTechLayerWidthTableRule;
 
 // Extraction Objects
 class dbExtControl;
-
-class ZContext;
 
 ///
 /// dbProperty - Property base class.
@@ -361,11 +360,6 @@ class dbDatabase : public dbObject
   /// Returns the number of masters
   ///
   uint getNumberOfMasters();
-
-  ///
-  /// Translate a database-name to a database object.
-  ///
-  // dbObject * resolveDbName( const char * dbname );
 
   ///
   /// Read a database from this stream.
@@ -1348,48 +1342,6 @@ class dbBlock : public dbObject
   dbBlockSearch* getSearchDb();
 
   ///
-  /// reset _netSdb
-  ///
-  // void resetNetSdb();
-
-  ///
-  /// Get search database module for fast area searches on signal nets
-  ///
-  //    ZPtr<ISdb> getSignalNetSdb();
-  ///
-  /// Get search database module for fast area searches on signal nets
-  /// Generate netSdb if it does not exist
-  ///
-  //    ZPtr<ISdb> getSignalNetSdb(ZContext & context, dbTech *tech);
-
-  ///
-  /// Get search database module for fast area searches on physical objects
-  ///
-  // ZPtr<ISdb> getNetSdb();
-  ///
-  /// Get search database module for fast area searches on physical objects
-  /// Generate netSdb if it does not exist
-  ///
-  // ZPtr<ISdb> getNetSdb(ZContext & context, dbTech *tech);
-  ///
-  /// Remove search database
-  ///
-  // void removeSdb(std::vector<dbNet *> & nets);
-  ///
-  /// Put insts/nets/tracks on Search DB
-  ///
-  // dbBlockSearch *initSearchBlock(dbTech *tech, bool nets, bool insts,
-  // ZContext & context, bool skipViaCuts=false);
-
-  ///
-  /// Get insts from Search DB given a bbox to do area search
-  ///
-  // uint getInsts(int x1, int y1, int x2, int y2, std::vector<dbInst *> &
-  // result);
-
-  void updateNetFlags(std::vector<dbNet*>& result);
-
-  ///
   /// destroy coupling caps of nets
   ///
   void destroyCCs(std::vector<dbNet*>& nets);
@@ -1557,25 +1509,7 @@ class dbBlock : public dbObject
 
   void clearUserInstFlags();
 
- private:
-  friend class ZDB;
-
-  ///
-  /// Build search database for fast area searches
-  ///
-  void makeSearchDB(bool nets, bool insts, ZContext& context);
-
  public:
-  ///
-  /// Get the Container class for Nets Search DB
-  ///
-  // ZPtr<ISdb> getSearchDbNets();
-
-  ///
-  /// Get the Container class for Insts Search DB
-  ///
-  // ZPtr<ISdb> getSearchDbInsts();
-
   ///
   /// This method copies the via-table from the src block to the destination
   /// block.
@@ -1586,16 +1520,6 @@ class dbBlock : public dbObject
   ///          be left dangling.
   ///
   static void copyViaTable(dbBlock* dst, dbBlock* src);
-
-  ///
-  /// Get the Read Only Container class for Nets Search DB
-  ///
-  // TODO ZPtr<ISdb_r> getSearchDbNets_r();
-
-  ///
-  /// Get the Read Only Container class for Insts Search DB
-  ///
-  // TODO ZPtr<ISdb_r> getSearchDbInsts_r();
 
   ///
   /// Create a chip's top-block. Returns nullptr of a top-block already
@@ -3284,6 +3208,16 @@ class dbInst : public dbObject
                         bool physical_only = false);
 
   ///
+  /// Create a new instance of child_block in top_block.
+  /// This is a convenience method to create the instance, an
+  /// interface dbMaster from child_block, and bind the instance
+  /// to the child_block.
+  ///
+  static dbInst* create(dbBlock* top_block,
+                        dbBlock* child_block,
+                        const char* name);
+
+  ///
   /// Delete the instance from the block.
   ///
   static void destroy(dbInst* inst);
@@ -3816,34 +3750,6 @@ class dbWire : public dbObject
   /// Detach this wire from a net.
   ///
   void detach();
-
-  ///
-  /// Copy the src wire to the desintation wire.
-  ///
-  ///    removeITermBTerms - if true, then any iterms or bterms referenced in
-  ///    the copied wire will be removed. copyVias - if true, then any reference
-  ///    vias that do not exists in the dst-block are copied to the src-block.
-  ///
-  ///
-  static void copy(dbWire* dst,
-                   dbWire* src,
-                   bool removeITermsBTerms = true,
-                   bool copyVias = true);
-
-  ///
-  /// Copy the src wire to the desintation wire. Filter vias and segments that
-  /// do not intersect bbox.
-  ///
-  ///    removeITermBTerms - if true, then any iterms or bterms referenced in
-  ///    the copied wire will be removed. copyVias - if true, then any reference
-  ///    vias that do not exists in the dst-block are copied to the src-block.
-  ///
-  ///
-  static void copy(dbWire* dst,
-                   dbWire* src,
-                   const Rect& bbox,
-                   bool removeITermsBTerms = true,
-                   bool copyVias = true);
 
   ///
   /// Create a wire.
@@ -6956,7 +6862,6 @@ class dbTechSameNetRule : public dbObject
 };
 
 class dbViaParams : private _dbViaParams
-// class dbViaParams : public _dbViaParams
 {
   friend class dbVia;
   friend class dbTechVia;
@@ -7564,10 +7469,6 @@ class dbPowerSwitch : public dbObject
  public:
   const char* getName() const;
 
-  std::string getInSupplyPort() const;
-
-  std::string getOutSupplyPort() const;
-
   void setControlNet(dbNet* control_net);
 
   dbNet* getControlNet() const;
@@ -7579,12 +7480,27 @@ class dbPowerSwitch : public dbObject
   // User Code Begin dbPowerSwitch
   static dbPowerSwitch* create(dbBlock* block, const char* name);
   static void destroy(dbPowerSwitch* ps);
-  void setInSupplyPort(const std::string& in_port);
-  void setOutSupplyPort(const std::string& out_port);
+  void addInSupplyPort(const std::string& in_port);
+  void addOutSupplyPort(const std::string& out_port);
   void addControlPort(const std::string& control_port);
   void addOnState(const std::string& on_state);
+  void setLibCell(dbMaster* master);
+  void addPortMap(const std::string& model_port,
+                  const std::string& switch_port);
+
+  void addPortMap(const std::string& model_port, dbMTerm* mterm);
   std::vector<std::string> getControlPorts();
+  std::vector<std::string> getInputSupplyPorts();
+  std::vector<std::string> getOutputSupplyPorts();
   std::vector<std::string> getOnStates();
+
+  // Returns library cell that was defined in the upf for this power switch
+  dbMaster* getLibCell();
+
+  // returns a map associating the model ports to actual instances of dbMTerms
+  // belonging to the first
+  //  lib cell defined in the upf
+  std::map<std::string, dbMTerm*> getPortMap();
   // User Code End dbPowerSwitch
 };
 
@@ -7951,7 +7867,7 @@ class dbTechLayer : public dbObject
   ///
   /// Get the technology this layer belongs too.
   ///
-  dbTech* getTech();
+  dbTech* getTech() const;
 
   ///
   /// Create a new layer. The mask order is implicit in the create order.

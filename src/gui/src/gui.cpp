@@ -892,6 +892,7 @@ void Gui::setHeatMapSetting(const std::string& name,
   const std::string rebuild_map_option = "rebuild";
   if (option == rebuild_map_option) {
     source->destroyMap();
+    source->ensureMap();
   } else {
     auto settings = source->getSettings();
 
@@ -952,6 +953,33 @@ void Gui::setHeatMapSetting(const std::string& name,
   }
 
   source->getRenderer()->redraw();
+}
+
+Renderer::Setting Gui::getHeatMapSetting(const std::string& name,
+                                         const std::string& option)
+{
+  HeatMapDataSource* source = getHeatMap(name);
+
+  const std::string map_has_option = "has_data";
+  if (option == map_has_option) {
+    return source->hasData();
+  }
+
+  auto settings = source->getSettings();
+
+  if (settings.count(option) == 0) {
+    QStringList options;
+    for (const auto& [key, kv] : settings) {
+      options.append(QString::fromStdString(key));
+    }
+    logger_->error(utl::GUI,
+                   95,
+                   "{} is not a valid option. Valid options are: {}",
+                   option,
+                   options.join(", ").toStdString());
+  }
+
+  return settings[option];
 }
 
 void Gui::dumpHeatMap(const std::string& name, const std::string& file)
@@ -1209,9 +1237,7 @@ void Gui::hideGui()
 {
   // ensure continue after close is true, since we want to return to tcl
   setContinueAfterClose();
-  if (enabled()) {
-    main_window->hide();
-  }
+  main_window->exit();
 }
 
 void Gui::showGui(const std::string& cmds, bool interactive)
@@ -1301,7 +1327,7 @@ int startGui(int& argc,
       main_window, &MainWindow::exit, [&]() { exit_requested = true; });
 
   // Hide the Gui if someone chooses hide from the menu in the window
-  QObject::connect(main_window, &MainWindow::hide, &app, &QApplication::quit);
+  QObject::connect(main_window, &MainWindow::hide, [gui]() { gui->hideGui(); });
 
   // Save the window's status into the settings when quitting.
   QObject::connect(
@@ -1372,6 +1398,8 @@ int startGui(int& argc,
       gui->addRestoreStateCommand(cmd);
     }
   }
+
+  main_window->exit();
 
   // delete main window and set to nullptr
   delete main_window;

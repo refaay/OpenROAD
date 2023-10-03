@@ -12,7 +12,8 @@
 worst slack -3.24
 [INFO RSZ-0046] Found 2 endpoints with hold violations.
 [INFO RSZ-0032] Inserted 6 hold buffers.
-worst slack 0.21
+Repair timing output passed/skipped equivalence test
+worst slack 0.04
 Placement Analysis
 ---------------------------------
 total displacement          9.6 u
