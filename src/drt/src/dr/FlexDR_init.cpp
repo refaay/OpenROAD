@@ -3269,6 +3269,10 @@ void FlexDRWorker::initMazeCost_planarTerm(const frDesign* design)
 void FlexDRWorker::initMazeCost_connFig()
 {
   for (auto& net : nets_) {
+    if (net->getFrNet()->getName() == "net685") {
+      logger_->report("Net {} initMazeCost_connFig",
+                      net->getFrNet()->getName());
+    }
     for (auto& connFig : net->getExtConnFigs()) {
       addPathCost(connFig.get());
     }

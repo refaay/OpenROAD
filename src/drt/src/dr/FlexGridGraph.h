@@ -502,7 +502,8 @@ class FlexGridGraph
         node.routeShapeCostPlanar,
         1,
         std::to_string(x) + " " + std::to_string(y) + " " + std::to_string(z)
-            + " " + "subRouteShapeCostPlanar " + func_call);
+            + " " + "subRouteShapeCostPlanar idx"
+            + std::to_string(getIdx(x, y, z)) + " " + func_call);
   }
   void subRouteShapeCostVia(frMIdx x, frMIdx y, frMIdx z)
   {
