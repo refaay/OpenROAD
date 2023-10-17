@@ -1759,6 +1759,10 @@ void FlexDRWorker::route_queue_main(queue<RouteQueueEntry>& rerouteQueue)
       mazeNetEnd(net);
       net->addNumReroutes();
       didRoute = true;
+      if (net->getFrNet()->getName() == "net685") {
+        logger_->report("Net {} initMazeCost_connFig",
+                        net->getFrNet()->getName());
+      }
       // gc
       if (gcWorker_->setTargetNet(net->getFrNet())) {
         gcWorker_->updateDRNet(net);
@@ -1953,7 +1957,9 @@ void FlexDRWorker::modEolCosts_poly(std::string func_call,
                                     ModCostType modType)
 {
   if (net->getFrNet()->getName() == "net685") {
-    logger_->report("Net {} with mod cost type {}", net->getFrNet()->getName(), std::to_string(modType));
+    logger_->report("Net {} with mod cost type {}",
+                    net->getFrNet()->getName(),
+                    std::to_string(modType));
   }
   for (int lNum = getTech()->getBottomLayerNum();
        lNum <= getTech()->getTopLayerNum();
